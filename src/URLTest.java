@@ -3,29 +3,33 @@ import java.net.*;
 
 public class URLTest {
 
-    private static String urlContents(String url) {
-        StringBuilder content = new StringBuilder();
+    private static int urlLineCount(String url) {
+        int lineCount = 0;
 
         try {
             URL site = new URL(url);
             URLConnection urlConnection = site.openConnection();
             BufferedReader br = new BufferedReader(
-                    (new InputStreamReader(urlConnection.getInputStream()))
+                (new InputStreamReader(urlConnection.getInputStream()))
             );
             String line = br.readLine();
 
-            while (line != null) {
-                content.append(line + "\n");
-                br.close();
+            if (line == null || line.isEmpty()) {
+                return 0;
+            }
+            else {
+                int position = 0;
+                while (
+                    (position = line.indexOf("\n", position) + 1) != 0) {
+                    lineCount++;
+                }
             }
         }
         catch(Exception e) {
             e.printStackTrace();
         }
-
-        return content.toString();
-
-    };
+        return lineCount;
+    }
 
     private static int urlCharCount (String url) {
         int count = 0;
@@ -34,7 +38,7 @@ public class URLTest {
             URL site = new URL(url);
             URLConnection urlConnection = site.openConnection();
             BufferedReader br = new BufferedReader(
-                    (new InputStreamReader(urlConnection.getInputStream()))
+                (new InputStreamReader(urlConnection.getInputStream()))
             );
 
             String line = br.readLine();
@@ -50,16 +54,15 @@ public class URLTest {
         catch(Exception e) {
             e.printStackTrace();
         }
-
         return count;
     }
 
     public static void main(String[] args) {
         int charCount = urlCharCount("https://cnn.com");
-        System.out.println(charCount);
+        System.out.println("Character count is: " + charCount);
 
-//        String lineCount = urlContents("https://cnn.com");
-//        System.out.println(lineCount);
+        int lineCount = urlLineCount("https://cnn.com");
+        System.out.println("Line count is: " + lineCount);
 
     }
 }
